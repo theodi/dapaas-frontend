@@ -1,5 +1,5 @@
 class RootController < ApplicationController
-  slimmer_template :www
+  slimmer_template :dapaas
   
   def index
   end
