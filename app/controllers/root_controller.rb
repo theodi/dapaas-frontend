@@ -80,4 +80,8 @@ class RootController < ApplicationController
     end
   end
   
+  def api_domain
+    Plek.current.find("contentapi")
+  end
+  
 end
