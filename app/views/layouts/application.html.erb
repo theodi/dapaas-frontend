@@ -1,14 +1,26 @@
-<!DOCTYPE html>
-<html>
 <head>
-  <title>DapaasFrontend</title>
-  <%= stylesheet_link_tag    "application", media: "all", "data-turbolinks-track" => true %>
-  <%= javascript_include_tag "application", "data-turbolinks-track" => true %>
-  <%= csrf_meta_tags %>
+  <title>DaPaaS <%= strip_tags('| ' + yield(:title)).strip if yield(:title).present? %><%= " | " + yield(:page_title) if content_for?(:page_title) %></title>
 </head>
+
 <body>
+  
+  <div id='wrapper'>
+    <% if content_for?(:title) %>
+      <header class="page-title">
+          <div class="container">
+              <h1><%= yield :title %></h1>
+          </div>
+      </header>
+    <% end %>
+  
+    <%= yield :hero %>
 
-<%= yield %>
+    <div class="container">
+        <div class="row">
+          <%= yield %>
+        </div>
+    </div>
 
+  </div>
+  
 </body>
-</html>
