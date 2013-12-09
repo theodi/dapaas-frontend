@@ -36,6 +36,13 @@ group :doc do
   gem 'sdoc', require: false
 end
 
+group :test do
+  gem 'simplecov-rcov'
+  gem 'webmock'
+  gem 'mocha', :require => false
+  gem 'pry'
+end
+
 # Use ActiveModel has_secure_password
 # gem 'bcrypt-ruby', '~> 3.1.2'
 
