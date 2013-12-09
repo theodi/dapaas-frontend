@@ -16,6 +16,26 @@ class RootController < ApplicationController
   def index
   end
   
+  def page
+    artefact = ArtefactRetriever.new(content_api, Rails.logger, statsd).
+                  fetch_artefact(params[:slug], params[:edition], nil, nil)
+
+    @publication = PublicationPresenter.new(artefact)
+    respond_to do |format|
+      format.html do
+        begin
+          # Use a specific template if present
+          render "content/page-#{params[:slug]}.json"
+        rescue
+          render "content/page"
+        end
+      end
+      format.json do
+        redirect_to "#{api_domain}/#{params[:slug]}.json"
+      end
+    end
+  end
+  
   private
   
   def article(params)
