@@ -26,10 +26,9 @@ class RootController < ApplicationController
     respond_to do |format|
       format.html do
         begin
-          # Use a specific template if present
-          render "content/page-#{params[:slug]}"
-        rescue
-          render "content/page"
+          render "content/#{@section}"
+        rescue ActionView::MissingTemplate
+          render "content/#{@publication.format}"
         end
       end
       format.json do
