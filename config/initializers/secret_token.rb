@@ -9,4 +9,4 @@
 
 # Make sure your secret_key_base is kept private
 # if you're sharing your code publicly.
-DapaasFrontend::Application.config.secret_key_base = 'c8d865601adcbcdcb025e604917043a5444fd3e1903ecd32067a61181472e0c5eeb3af72f754cc5f24917d356b67c6bb5b27d30f62195205feb5c8bba410ca5e'
+DapaasFrontend::Application.config.secret_token = ENV['QUIRKAFLEEG_DAPAAS_SESSION_SECRET']
