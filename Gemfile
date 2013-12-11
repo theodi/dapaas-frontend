@@ -50,10 +50,5 @@ gem 'slimmer'
 gem 'plek'
 gem 'gds-api-adapters', :github => 'theodi/gds-api-adapters'
 gem 'statsd-ruby', '1.0.0', :require => 'statsd'
-<<<<<<< HEAD
-gem 'thin'
-=======
-
 gem 'thin'
 gem 'foreman'
->>>>>>> 891f7b41e5603cb1255241d5edd9f271faf7b730
