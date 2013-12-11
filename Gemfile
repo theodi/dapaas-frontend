@@ -1,10 +1,6 @@
 source 'https://rubygems.org'
 
-<<<<<<< HEAD
-#ruby=ruby-1.9.3-p484
-=======
 #ruby=ruby-1.9.3
->>>>>>> 891f7b41e5603cb1255241d5edd9f271faf7b730
 #ruby-gemset=dapaas-frontend
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
