@@ -71,6 +71,47 @@ class RootControllerTest < ActionController::TestCase
     assert_match /<p>Bacon ipsum dolor sit amet hamburger fugiat jowl, reprehenderit filet mignon ut ad ham hock consectetur bresaola leberkas laborum pork drumstick. Incididunt ut laboris voluptate, velit aliquip dolor beef ribs strip steak short ribs. Beef meatloaf proident boudin nostrud. Jerky shank sed ullamco corned beef pork loin in.<\/p> <p>Ut turducken meatloaf pig mollit drumstick. Eiusmod andouille aute, pig turducken magna bacon cupidatat cow shank in prosciutto cillum hamburger esse. Ea jowl consequat drumstick adipisicing. Labore biltong ball tip eiusmod tempor, velit sed jerky ribeye cillum consectetur est sausage.<\/p> <p>Ham do id shank brisket corned beef. Veniam short loin consectetur, qui laborum hamburger consequat ea sausage ham hock venison brisket shankle minim nisi. Cow kevin non, pork loin sausage ham hock sint pork tri-tip officia est commodo consectetur occaecat enim. Quis dolore spare ribs biltong, rump andouille nisi jerky pancetta tri-tip chicken venison ullamco boudin. Beef tenderloin leberkas mollit excepteur officia anim.<\/p> <p>Anim pancetta ut salami labore nulla qui hamburger filet mignon chicken exercitation. Chicken tri-tip tempor enim. Ullamco chuck cupidatat pork loin, nulla ham boudin pastrami sint sirloin irure tempor minim. Ullamco exercitation id flank. Deserunt pancetta ball tip cupidatat kevin venison. Kielbasa sirloin adipisicing sunt hamburger spare ribs turducken pork.<\/p>/, doc.search('.article-body')[0].to_s.squish
   end
   
+  test "should list partners" do
+    stub_request(:get, "http://contentapi.dev/with_tag.json?include_children=1&role=dapaas&tag=partner").
+      with(:headers => {'Accept'=>'application/json', 'Accept-Encoding'=>'gzip, deflate', 'Authorization'=>'Bearer overwritten on deploy', 'Content-Type'=>'application/json', 'User-Agent'=>'GDS Api Client v. 7.5.0'}).
+      to_return(:status => 200, :body => load_fixture('partners-list.json'), :headers => {})
+      
+    get :partners_list, :section => "partners"
+    assert_response :ok
+    
+    doc = Nokogiri::HTML response.body
+    
+    assert_equal doc.search('#grid2 li').count, 1
+    assert_equal "Open Data Institute (ODI)", doc.search('#grid2 li').first.search('h1.module-heading')[0].content
+  end
+  
+  test "should display partners" do
+    stub_request(:get, "http://contentapi.dev/odi-open-data-institute.json?role=dapaas").
+      with(:headers => {'Accept'=>'application/json', 'Accept-Encoding'=>'gzip, deflate', 'Authorization'=>'Bearer overwritten on deploy', 'Content-Type'=>'application/json', 'User-Agent'=>'GDS Api Client v. 7.5.0'}).
+      to_return(:status => 200, :body => load_fixture('dapaas-test-partner.json'), :headers => {})
+      
+    get :partners_article, :slug => "odi-open-data-institute", :section => "partners"
+    
+    doc = Nokogiri::HTML response.body
+    
+    assert_equal doc.search('.article-body h2')[0].content, "Open Data Institute (ODI)"
+    assert_equal doc.search('.article-body div p')[0].content.squish, "The Open Data Institute (ODI), was founded by Sir Tim Berners-Lee and Sir Nigel Shadbolt and launched officially in December 2012. As an independent, non-profit, non-partisan company, the ODI provides a catalyst for the evolution of an open data culture, creating economic, environmental and social value. The ODI works with government, the commercial, public, and not-for-profit sectors, in the UK and worldwide to unlock the supply of open data and build understanding of the benefits of doing so."
+    assert_equal doc.search('.article-body div p')[1].content.squish, "Through an incubation programme for open data startups and a network of over 50 members, the ODI is stimulating the demand for open data in areas such as transparency and open innovation. By conducting research and contributing to policy, the ODI is developing and disseminating open data best practices, exemplified by the Open Data Certificates service, which provides a seal of approval for published data sets."
+    assert_equal doc.search('.article-body div p')[2].content.squish, "Through a public training programme, the convening of world class experts from industry and academic, and the ongoing Open Data Challenge series, the ODI is building capability across a range of sectors and communities. Contributions from the ODI to wider initiatives, such as the Smart London board (exploring smart city solutions for London), ensure that open data delivers the greatest possible economic, environmental and social value."
+  
+    assert_equal doc.search('.article-body img.partner-logo')[0][:src], "http://bd7a65e2cb448908f934-86a50c88e47af9e1fb58ce0672b5a500.r32.cf3.rackcdn.com/uploads/assets/a9/b3/52a9b3dcd0d4624a8c000006/outline-solid-W-170px.png"
+  
+    assert_equal doc.search('.article-body ul')[0].search('li')[0].content, "Phone Number: 123456"
+    assert_equal doc.search('.article-body ul')[0].search('li')[1].content, "Email Address: info@theodi.org"
+    assert_equal doc.search('.article-body ul')[0].search('li')[1].search('a')[0][:href], "mailto:info@theodi.org"
+    assert_equal doc.search('.article-body ul')[0].search('li')[2].content, "Website: http://theodi.org"
+    assert_equal doc.search('.article-body ul')[0].search('li')[2].search('a')[0][:href], "http://theodi.org"
+    assert_equal doc.search('.article-body ul')[0].search('li')[3].content, "Twitter: @UKODI"
+    assert_equal doc.search('.article-body ul')[0].search('li')[3].search('a')[0][:href], "http://twitter.com/UKODI"
+    assert_equal doc.search('.article-body ul')[0].search('li')[4].content, "Linkedin: http://linkedin.com/example"
+    assert_equal doc.search('.article-body ul')[0].search('li')[4].search('a')[0][:href], "http://linkedin.com/example"
+  end
+  
   test "should display pages" do
     stub_request(:get, "http://contentapi.dev/test-dapaas-content.json?role=dapaas").
       with(:headers => {'Accept'=>'application/json', 'Accept-Encoding'=>'gzip, deflate', 'Authorization'=>'Bearer overwritten on deploy', 'Content-Type'=>'application/json', 'User-Agent'=>'GDS Api Client v. 7.5.0'}).
