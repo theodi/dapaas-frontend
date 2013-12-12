@@ -34,6 +34,10 @@ group :test do
   gem 'pry'
 end
 
+group :production do
+  gem 'airbrake'
+end
+
 # Use ActiveModel has_secure_password
 # gem 'bcrypt-ruby', '~> 3.1.2'
 
