@@ -71,6 +71,19 @@ class RootControllerTest < ActionController::TestCase
     assert_match /<p>Bacon ipsum dolor sit amet hamburger fugiat jowl, reprehenderit filet mignon ut ad ham hock consectetur bresaola leberkas laborum pork drumstick. Incididunt ut laboris voluptate, velit aliquip dolor beef ribs strip steak short ribs. Beef meatloaf proident boudin nostrud. Jerky shank sed ullamco corned beef pork loin in.<\/p> <p>Ut turducken meatloaf pig mollit drumstick. Eiusmod andouille aute, pig turducken magna bacon cupidatat cow shank in prosciutto cillum hamburger esse. Ea jowl consequat drumstick adipisicing. Labore biltong ball tip eiusmod tempor, velit sed jerky ribeye cillum consectetur est sausage.<\/p> <p>Ham do id shank brisket corned beef. Veniam short loin consectetur, qui laborum hamburger consequat ea sausage ham hock venison brisket shankle minim nisi. Cow kevin non, pork loin sausage ham hock sint pork tri-tip officia est commodo consectetur occaecat enim. Quis dolore spare ribs biltong, rump andouille nisi jerky pancetta tri-tip chicken venison ullamco boudin. Beef tenderloin leberkas mollit excepteur officia anim.<\/p> <p>Anim pancetta ut salami labore nulla qui hamburger filet mignon chicken exercitation. Chicken tri-tip tempor enim. Ullamco chuck cupidatat pork loin, nulla ham boudin pastrami sint sirloin irure tempor minim. Ullamco exercitation id flank. Deserunt pancetta ball tip cupidatat kevin venison. Kielbasa sirloin adipisicing sunt hamburger spare ribs turducken pork.<\/p>/, doc.search('.article-body')[0].to_s.squish
   end
   
+  test "should list partners" do
+    stub_request(:get, "http://contentapi.dev/with_tag.json?include_children=1&role=dapaas&tag=partner").
+      with(:headers => {'Accept'=>'application/json', 'Accept-Encoding'=>'gzip, deflate', 'Authorization'=>'Bearer overwritten on deploy', 'Content-Type'=>'application/json', 'User-Agent'=>'GDS Api Client v. 7.5.0'}).
+      to_return(:status => 200, :body => load_fixture('partners-list.json'), :headers => {})
+      
+    get :partners_list, :section => "partners"
+    assert_response :ok
+    
+    doc = Nokogiri::HTML response.body
+    
+    assert_equal doc.search('#grid2 li').count, 1
+    assert_equal "Open Data Institute (ODI)", doc.search('#grid2 li').first.search('h1.module-heading')[0].content
+  end
   test "should display pages" do
     stub_request(:get, "http://contentapi.dev/test-dapaas-content.json?role=dapaas").
       with(:headers => {'Accept'=>'application/json', 'Accept-Encoding'=>'gzip, deflate', 'Authorization'=>'Bearer overwritten on deploy', 'Content-Type'=>'application/json', 'User-Agent'=>'GDS Api Client v. 7.5.0'}).

@@ -5,7 +5,7 @@ DapaasFrontend::Application.routes.draw do
   # You can have the root of your site routed with "root"
   root :to => 'root#index'
 
-  [:blog, :news, :events].each do |section|
+  [:blog, :news, :events, :partners].each do |section|
     section_slug = section.to_s.dasherize
     get "#{section_slug}", as: "#{section}_section", to: "root##{section}_list", :section => section_slug
 
