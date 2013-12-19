@@ -3,6 +3,9 @@ require 'test_helper'
 class RootControllerTest < ActionController::TestCase
   
   test "should get index" do
+    stub_request(:get, "http://contentapi.dev/dapaas-home.json?role=dapaas").
+      with(:headers => {'Accept'=>'application/json', 'Accept-Encoding'=>'gzip, deflate', 'Authorization'=>'Bearer overwritten on deploy', 'Content-Type'=>'application/json', 'User-Agent'=>'GDS Api Client v. 7.5.0'}).
+      to_return(:status => 200, :body => load_fixture('test-dapaas-content.json'), :headers => {})
     get :index
     assert_response :ok
   end
