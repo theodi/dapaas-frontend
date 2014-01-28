@@ -86,6 +86,7 @@ class RootController < ApplicationController
   end
   
   def sort_events(artefacts)
+    artefacts.reject!{|x| Date.parse(x.details.start_date || x.details.date) < Date.today}
     artefacts.sort_by!{|x| Date.parse(x.details.start_date || x.details.date)}
   end
   

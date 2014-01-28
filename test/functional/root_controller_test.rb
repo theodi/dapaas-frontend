@@ -76,8 +76,8 @@ class RootControllerTest < ActionController::TestCase
     assert_equal doc.search('.date').first.content, "2014-01-21"
   end
   
-  test "should list events" do
   test "should list events in chronological order" do
+    Timecop.freeze(Time.parse("2013-01-28T13:00:00+00:00"))
     stub_request(:get, "http://contentapi.dev/with_tag.json?include_children=1&role=dapaas&tag=event").
       with(:headers => {'Accept'=>'application/json', 'Accept-Encoding'=>'gzip, deflate', 'Authorization'=>'Bearer overwritten on deploy', 'Content-Type'=>'application/json', 'User-Agent'=>'GDS Api Client v. 7.5.0'}).
       to_return(:status => 200, :body => load_fixture('events-list.json'), :headers => {})
@@ -87,9 +87,12 @@ class RootControllerTest < ActionController::TestCase
     
     doc = Nokogiri::HTML response.body
     
-    assert_equal doc.search('#grid2 li').count, 1
-    assert_match /Dapaas test event/, doc.search('#grid2 li').first.search('h1.module-heading')[0].content
-    assert_equal doc.search('#grid2 li').first.search('span.date')[0].to_s, "<span class=\"date\">Wednesday 25 December 2013<br>at  3:00PM</span>"
+    assert_equal doc.search('#grid2 li').count, 3
+    assert_match /European Data Forum/, doc.search('#grid2 li')[0].search('h1.module-heading')[0].content
+    assert_equal doc.search('#grid2 li').first.search('span.date')[0].to_s, "<span class=\"date\">Wednesday 19 March 2014<br>at 12:00AM</span>"
+    assert_match /FutureEverything Festival/, doc.search('#grid2 li')[1].search('h1.module-heading')[0].content
+    assert_match /OKFestival/, doc.search('#grid2 li')[2].search('h1.module-heading')[0].content
+    Timecop.return
   end
   
   test "should display events" do
