@@ -20,4 +20,10 @@ module ApplicationHelper
     @publication.end_date.to_datetime > DateTime.now
   end
   
+  def author(publication)
+    if publication.author
+      content_tag :span, publication.author["name"], :class => "author"
+    end
+  end
+  
 end
