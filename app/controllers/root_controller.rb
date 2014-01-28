@@ -64,6 +64,7 @@ class RootController < ApplicationController
   def list(params)
     @section = params[:section].parameterize
     @artefacts = content_api.with_tag(params[:section].singularize).results
+    sort_events(@artefacts) if @section == "events"
     @title = params[:section].gsub('-', ' ').humanize.capitalize
     respond_to do |format|
       format.html do
@@ -82,6 +83,10 @@ class RootController < ApplicationController
         render "list/feed"
       end
     end
+  end
+  
+  def sort_events(artefacts)
+    artefacts.sort_by!{|x| Date.parse(x.details.start_date || x.details.date)}
   end
   
   def api_domain

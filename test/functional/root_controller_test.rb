@@ -77,6 +77,7 @@ class RootControllerTest < ActionController::TestCase
   end
   
   test "should list events" do
+  test "should list events in chronological order" do
     stub_request(:get, "http://contentapi.dev/with_tag.json?include_children=1&role=dapaas&tag=event").
       with(:headers => {'Accept'=>'application/json', 'Accept-Encoding'=>'gzip, deflate', 'Authorization'=>'Bearer overwritten on deploy', 'Content-Type'=>'application/json', 'User-Agent'=>'GDS Api Client v. 7.5.0'}).
       to_return(:status => 200, :body => load_fixture('events-list.json'), :headers => {})
