@@ -32,6 +32,7 @@ group :test do
   gem 'webmock'
   gem 'mocha', :require => false
   gem 'pry'
+  gem 'timecop'
 end
 
 group :production do
