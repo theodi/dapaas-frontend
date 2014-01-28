@@ -27,6 +27,23 @@ class RootControllerTest < ActionController::TestCase
     assert_equal doc.search('#grid2 li').first.search('p.category')[0].content, "news"
   end
   
+  test "should list blogs" do
+    stub_request(:get, "http://contentapi.dev/with_tag.json?include_children=1&role=dapaas&tag=blog").
+      with(:headers => {'Accept'=>'application/json', 'Accept-Encoding'=>'gzip, deflate', 'Authorization'=>'Bearer overwritten on deploy', 'Content-Type'=>'application/json', 'User-Agent'=>'GDS Api Client v. 7.5.0'}).
+      to_return(:status => 200, :body => load_fixture('blog-list.json'), :headers => {})
+      
+    get :blog_list, :section => "blog"
+    assert_response :ok
+    
+    doc = Nokogiri::HTML response.body
+    
+    assert_equal doc.search('#grid2 li').count, 1
+    assert_equal doc.search('#grid2 li').first.search('h1')[0].content, "Treating content as data"
+    assert_equal doc.search('#grid2 li').first.search('p.module-subheading')[0].content, "Stuart Harrison"
+    assert_equal doc.search('#grid2 li').first.search('p.module-meta')[0].content, "21 January 2014"
+    assert_equal doc.search('#grid2 li').first.search('p.category')[0].content, "blog"
+  end  
+  
   test "should display news" do
     stub_request(:get, "http://contentapi.dev/test-dapaas-content.json?role=dapaas").
       with(:headers => {'Accept'=>'application/json', 'Accept-Encoding'=>'gzip, deflate', 'Authorization'=>'Bearer overwritten on deploy', 'Content-Type'=>'application/json', 'User-Agent'=>'GDS Api Client v. 7.5.0'}).
@@ -42,6 +59,21 @@ class RootControllerTest < ActionController::TestCase
     assert_equal doc.search('.article-body p')[1].content, "Frankfurter biltong pastrami meatloaf, tenderloin kielbasa brisket flank. Pork swine venison shoulder ham cow short ribs, salami ribeye turkey. Shoulder leberkas kevin flank, filet mignon andouille brisket ball tip chuck corned beef. Ham hock leberkas hamburger salami beef ribs, flank pancetta cow. Pork chop hamburger ribeye spare ribs, capicola bacon cow chicken pig."
     assert_equal doc.search('.article-body p')[2].content, "Short loin shankle rump shank shoulder ground round salami doner boudin. Brisket chuck filet mignon capicola flank tongue leberkas pig shankle, pancetta shank tenderloin meatball. Turducken rump short loin tongue boudin ribeye biltong doner chuck leberkas. Short loin turkey fatback salami sausage."
     assert_equal doc.search('.article-body p')[3].content, "Shank salami flank cow pork belly pork chop ham hock. Bresaola swine ham meatball, turducken doner salami. Tongue turducken hamburger, beef sausage short ribs fatback. Tongue pork belly pastrami tail filet mignon chicken ham turkey drumstick."    
+  end
+  
+  test "should display blogs" do
+    stub_request(:get, "http://contentapi.dev/treating-content-as-data.json?role=dapaas").
+      with(:headers => {'Accept'=>'application/json', 'Accept-Encoding'=>'gzip, deflate', 'Authorization'=>'Bearer overwritten on deploy', 'Content-Type'=>'application/json', 'User-Agent'=>'GDS Api Client v. 7.5.0'}).
+      to_return(:status => 200, :body => load_fixture('treating-content-as-data.json'), :headers => {})
+      
+    get :blog_article, :slug => "treating-content-as-data", :section => "blog"
+    assert_response :ok
+    
+    doc = Nokogiri::HTML response.body
+      
+    assert_equal doc.search('.page-title h1')[0].content, "Treating content as data"
+    assert_equal doc.search('.author').first.content, "Stuart Harrison"
+    assert_equal doc.search('.date').first.content, "2014-01-21"
   end
   
   test "should list events" do
