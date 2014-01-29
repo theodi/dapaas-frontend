@@ -187,5 +187,25 @@ class RootControllerTest < ActionController::TestCase
     assert_equal "Mr Tickle", doc.search('ul#grid-people li').first.search('h1').first.content
     assert_equal "Tickle Inc", doc.search('ul#grid-people li').first.search('p').first.content
   end
+  
+  test "should show partner biography" do
+    stub_request(:get, "http://contentapi.dev/mr-tickle.json?role=dapaas").
+      with(:headers => {'Accept'=>'application/json', 'Accept-Encoding'=>'gzip, deflate', 'Authorization'=>'Bearer overwritten on deploy', 'Content-Type'=>'application/json', 'User-Agent'=>'GDS Api Client v. 7.5.0'}).
+      to_return(:status => 200, :body => load_fixture('partner-biography.json'), :headers => {})
+      
+    get :partner_biographies_article, :section => "partner-biographies", :slug => "mr-tickle"
+    assert_response :ok
+
+    doc = Nokogiri::HTML response.body
+    
+    assert_match /Mr Tickle/, doc.search('h2')[0].content
+    assert_match /Tickle Inc/, doc.search('h3')[0].content
+    assert_match /Mr. Tickle's story begins with him in bed and making himself breakfast /, doc.search('p')[0].content
+    assert_equal "/uploads/assets/e9/14/52e914a160aa27ffb7000003/square_Mr._Tickle.jpg", doc.search('img')[0][:src]
+    assert_equal "http://linkedin.com/mr_tickle", doc.search('#social a')[0][:href]
+    assert_equal "https://github.com/mr_tickle", doc.search('#social a')[1][:href]
+    assert_equal "http://www.twitter.com/mr_tickle", doc.search('#social a')[2][:href]
+
+  end
 
 end
