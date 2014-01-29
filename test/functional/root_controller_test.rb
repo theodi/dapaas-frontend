@@ -170,5 +170,22 @@ class RootControllerTest < ActionController::TestCase
     assert_equal "2014-01-28", doc.search('table tbody tr td')[1].content
     assert_equal "/uploads/assets/e8/e6/52e8e63160aa27d4d2000009/seglog.txt", doc.search('table tbody tr td a')[0][:href]
   end
+  
+  test "should list partner biographies" do
+    stub_request(:get, "http://contentapi.dev/with_tag.json?include_children=1&role=dapaas&tag=partner-biography").
+      with(:headers => {'Accept'=>'application/json', 'Accept-Encoding'=>'gzip, deflate', 'Authorization'=>'Bearer overwritten on deploy', 'Content-Type'=>'application/json', 'User-Agent'=>'GDS Api Client v. 7.5.0'}).
+      to_return(:status => 200, :body => load_fixture('partner-biographies.json'), :headers => {})
+  
+    get :partner_biographies_list, :section => "partner-biographies"
+    assert_response :ok
+
+    doc = Nokogiri::HTML response.body
+  
+    assert_equal doc.search('ul#grid-people li').count, 1
+    assert_equal "/dapaas-partner-biographies/mr-tickle", doc.search('ul#grid-people li').first.search('a').first[:href]
+    assert_equal "/uploads/assets/e9/14/52e914a160aa27ffb7000003/square_Mr._Tickle.jpg", doc.search('ul#grid-people li').first.search('img').first[:src]
+    assert_equal "Mr Tickle", doc.search('ul#grid-people li').first.search('h1').first.content
+    assert_equal "Tickle Inc", doc.search('ul#grid-people li').first.search('p').first.content
+  end
 
 end
