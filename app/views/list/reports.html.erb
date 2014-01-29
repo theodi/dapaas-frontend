@@ -1,0 +1,20 @@
+<% content_for :title, @title %>
+
+<table class="table">
+  <thead>
+    <tr>
+      <th>Title</th>
+      <th>Date published</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+  	<% @artefacts.each do |artefact| %>
+  		<tr>
+  		  <td><%= artefact.title %></td>
+  		  <td><%= DateTime.parse(artefact.details.date).strftime("%Y-%m-%d") %></td>
+  		  <td><%= link_to "Download", artefact.details.web_url, :title => "Download #{artefact.title}" %></td>
+  		</tr>
+  	<% end %>
+	</tbody>
+</table>

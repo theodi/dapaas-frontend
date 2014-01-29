@@ -154,5 +154,21 @@ class RootControllerTest < ActionController::TestCase
     assert_equal doc.search('.page-title h1')[0].content, "Dapaas test page"
     assert_equal doc.search('.article-body p')[0].content, "Bacon ipsum dolor sit amet venison bacon pastrami, swine frankfurter rump filet mignon tri-tip beef ribs sirloin shankle sausage. Short loin ribeye pork corned beef capicola leberkas swine. Chuck ball tip shoulder frankfurter hamburger swine. Drumstick cow pastrami strip steak capicola meatball chicken swine ball tip doner. Shankle doner capicola meatball. Brisket drumstick capicola, jerky spare ribs andouille bacon short ribs tri-tip ball tip sirloin."
   end
+  
+  test "should list reports" do
+    stub_request(:get, "http://contentapi.dev/with_tag.json?include_children=1&role=dapaas&tag=report").
+      with(:headers => {'Accept'=>'application/json', 'Accept-Encoding'=>'gzip, deflate', 'Authorization'=>'Bearer overwritten on deploy', 'Content-Type'=>'application/json', 'User-Agent'=>'GDS Api Client v. 7.5.0'}).
+      to_return(:status => 200, :body => load_fixture('reports.json'), :headers => {})
+      
+    get :reports_list, :section => "reports"
+    assert_response :ok
+    
+    doc = Nokogiri::HTML response.body
+    
+    assert_equal doc.search('table tbody tr').count, 1
+    assert_equal "Report test", doc.search('table tbody tr td')[0].content
+    assert_equal "2014-01-28", doc.search('table tbody tr td')[1].content
+    assert_equal "/uploads/assets/e8/e6/52e8e63160aa27d4d2000009/seglog.txt", doc.search('table tbody tr td a')[0][:href]
+  end
 
 end
