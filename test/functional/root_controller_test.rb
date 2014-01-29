@@ -10,39 +10,29 @@ class RootControllerTest < ActionController::TestCase
     assert_response :ok
   end
   
-  test "should list news" do
+  test "should list news and blog posts together" do
     stub_request(:get, "http://contentapi.dev/with_tag.json?include_children=1&role=dapaas&tag=news").
       with(:headers => {'Accept'=>'application/json', 'Accept-Encoding'=>'gzip, deflate', 'Authorization'=>'Bearer overwritten on deploy', 'Content-Type'=>'application/json', 'User-Agent'=>'GDS Api Client v. 7.5.0'}).
       to_return(:status => 200, :body => load_fixture('news-list.json'), :headers => {})
+    stub_request(:get, "http://contentapi.dev/with_tag.json?include_children=1&role=dapaas&tag=blog").
+      with(:headers => {'Accept'=>'application/json', 'Accept-Encoding'=>'gzip, deflate', 'Authorization'=>'Bearer overwritten on deploy', 'Content-Type'=>'application/json', 'User-Agent'=>'GDS Api Client v. 7.5.0'}).
+      to_return(:status => 200, :body => load_fixture('blog-list.json'), :headers => {})
       
     get :news_list, :section => "news"
     assert_response :ok
     
     doc = Nokogiri::HTML response.body
     
-    assert_equal doc.search('#grid2 li').count, 1
-    assert_equal doc.search('#grid2 li').first.search('h1')[0].content, "Test Dapaas content"
-    assert_equal doc.search('#grid2 li').first.search('p.module-subheading')[0].content, "Alex Coley"
-    assert_equal doc.search('#grid2 li').first.search('p.module-meta')[0].content, "9 December 2013"
-    assert_equal doc.search('#grid2 li').first.search('p.category')[0].content, "news"
+    assert_equal doc.search('#grid2 li').count, 2
+    assert_equal doc.search('#grid2 li')[0].search('h1')[0].content, "Treating content as data"
+    assert_equal doc.search('#grid2 li')[0].search('p.module-subheading')[0].content, "Stuart Harrison"
+    assert_equal doc.search('#grid2 li')[0].search('p.module-meta')[0].content, "21 January 2014"
+    assert_equal doc.search('#grid2 li')[0].search('p.category')[0].content, "blog"
+    assert_equal doc.search('#grid2 li')[1].search('h1')[0].content, "Test Dapaas content"
+    assert_equal doc.search('#grid2 li')[1].search('p.module-subheading')[0].content, "Alex Coley"
+    assert_equal doc.search('#grid2 li')[1].search('p.module-meta')[0].content, "9 December 2013"
+    assert_equal doc.search('#grid2 li')[1].search('p.category')[0].content, "news"
   end
-  
-  test "should list blogs" do
-    stub_request(:get, "http://contentapi.dev/with_tag.json?include_children=1&role=dapaas&tag=blog").
-      with(:headers => {'Accept'=>'application/json', 'Accept-Encoding'=>'gzip, deflate', 'Authorization'=>'Bearer overwritten on deploy', 'Content-Type'=>'application/json', 'User-Agent'=>'GDS Api Client v. 7.5.0'}).
-      to_return(:status => 200, :body => load_fixture('blog-list.json'), :headers => {})
-      
-    get :blog_list, :section => "blog"
-    assert_response :ok
-    
-    doc = Nokogiri::HTML response.body
-    
-    assert_equal doc.search('#grid2 li').count, 1
-    assert_equal doc.search('#grid2 li').first.search('h1')[0].content, "Treating content as data"
-    assert_equal doc.search('#grid2 li').first.search('p.module-subheading')[0].content, "Stuart Harrison"
-    assert_equal doc.search('#grid2 li').first.search('p.module-meta')[0].content, "21 January 2014"
-    assert_equal doc.search('#grid2 li').first.search('p.category')[0].content, "blog"
-  end  
   
   test "should display news" do
     stub_request(:get, "http://contentapi.dev/test-dapaas-content.json?role=dapaas").
