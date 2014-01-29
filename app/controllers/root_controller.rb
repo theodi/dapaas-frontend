@@ -64,6 +64,7 @@ class RootController < ApplicationController
   def list(params)
     @section = params[:section].parameterize
     @artefacts = content_api.with_tag(params[:section].singularize).results
+    @artefacts = news_artefacts(@artefacts) if @section == "news"
     sort_events(@artefacts) if @section == "events"
     @title = params[:section].gsub('-', ' ').humanize.capitalize
     respond_to do |format|
@@ -88,6 +89,12 @@ class RootController < ApplicationController
   def sort_events(artefacts)
     artefacts.reject!{|x| Date.parse(x.details.start_date || x.details.date) < Date.today}
     artefacts.sort_by!{|x| Date.parse(x.details.start_date || x.details.date)}
+  end
+  
+  def news_artefacts(artefacts)
+    artefacts += content_api.with_tag("blog").results
+    artefacts.sort_by!{|x| x.created_at}.reverse!
+    artefacts
   end
   
   def api_domain
