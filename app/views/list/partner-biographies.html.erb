@@ -1,0 +1,20 @@
+<% content_for :title, @title %>
+<div class="people-team">
+  
+  <ul class="grid effect-2" id="grid-people">
+  <% @artefacts.each do |person| %>
+  <li class="home-module">
+      <div class="module module-light module-colour-5">
+          <a href="<%= partner_biographies_article_path(person.slug) %>">
+              <%= image_tag person.details.square, width: "238", alt: person.title %>
+              <h1 class="module-heading"><%= person.title %></h1>
+              <p class="module-subheading"><%= person.details.organisation.name %></p>
+          </a>
+      </div>
+  </li>
+  <% end %>
+	</ul>
+	
+</div>
+
+<%= render :partial => "list/masonry" %>
