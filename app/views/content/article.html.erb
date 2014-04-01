@@ -6,7 +6,12 @@
       	<span class="date"><%= @publication.created %></span> by
 		<%= author(@publication) %>
       </div>
-  
+
     <%= @publication.content.try(:html_safe) %>
   </article>
+
+  <h3>Comments</h3>
+
+  <%= juvia_comments @publication.slug %>
+
 </div>
