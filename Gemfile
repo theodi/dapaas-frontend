@@ -24,6 +24,7 @@ gem 'jbuilder', '~> 1.2'
 
 gem 'font-awesome-rails'
 
+gem 'juvia_rails', github: 'theodi/juvia_rails'
 
 group :doc do
   # bundle exec rake doc:rails generates the API under doc/api.

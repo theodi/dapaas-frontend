@@ -10,6 +10,13 @@ GIT
       plek
       rest-client (~> 1.6.3)
 
+GIT
+  remote: git://github.com/theodi/juvia_rails.git
+  revision: 0e6dd7d597f10ad9174fb0c08de635a5f0063777
+  specs:
+    juvia_rails (0.0.1)
+      rails (~> 3.2.1)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -183,6 +190,7 @@ DEPENDENCIES
   gds-api-adapters!
   jbuilder (~> 1.2)
   jquery-rails
+  juvia_rails!
   mocha
   plek
   pry
