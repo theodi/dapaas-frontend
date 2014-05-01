@@ -3,7 +3,9 @@ DapaasFrontend::Application.routes.draw do
   # See how all your routes lay out with "rake routes".
 
   # You can have the root of your site routed with "root"
-  root :to => 'root#index'
+  root to: 'root#index'
+
+  get "search", to: "search#perform"
 
   [:blog, :news, :events, :partners, :reports, :partner_biographies].each do |section|
     section_slug = section.to_s.dasherize
@@ -17,6 +19,6 @@ DapaasFrontend::Application.routes.draw do
 
     get "dapaas-#{section_slug}/:slug/badge", as: "#{section}_badge", to: 'root#badge', :section => section_slug
   end
-  
+
   get ":slug", as: "page", to: 'root#page'
 end
