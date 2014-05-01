@@ -22,5 +22,10 @@ module DapaasFrontend
     # The default locale is :en and all translations from config/locales/*.rb,yml are auto loaded.
     # config.i18n.load_path += Dir[Rails.root.join('my', 'locales', '*.{rb,yml}').to_s]
     # config.i18n.default_locale = :de
+
+    # Use GA middleware
+    if ENV['QUIRKAFLEEG_DAPAAS_ANALYTICS_KEY']
+      config.middleware.use("Rack::GoogleAnalytics", :tracker => ENV['QUIRKAFLEEG_DAPAAS_ANALYTICS_KEY'])
+    end
   end
 end
