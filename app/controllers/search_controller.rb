@@ -1,4 +1,5 @@
 class SearchController < ApplicationController
+  slimmer_template :dapaas
 
   DEFAULT_RESULTS_PER_PAGE = 50
   MAX_RESULTS_PER_PAGE = 100
