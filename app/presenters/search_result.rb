@@ -1,5 +1,15 @@
 class SearchResult
 
+  PATH_LOOKUP = {
+    "blog" => "blog_article_path",
+    "news" => "news_article_path",
+    "partner-biography" => "partner_biographies_article_path",
+    "partner" => "partners_article_path",
+    "page" => "page_path",
+    "report" => "reports_article_path",
+    "networking-events" => "events_article_path"
+  }
+
   def initialize(result)
     @result = result.stringify_keys!
   end
@@ -22,5 +32,9 @@ class SearchResult
 
   result_accessor :title, :es_score
   details_accessor :slug, :format, :description
+
+  def path
+    Rails.application.routes.url_helpers.send(PATH_LOOKUP[format], slug)
+  end
 
 end
