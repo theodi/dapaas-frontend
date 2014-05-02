@@ -1,13 +1,7 @@
-class UnifiedSearchResultsPresenter
+class SearchResultsPresenter
 
   def initialize(search_response)
     @search_response = search_response
-  end
-
-  def spelling_suggestion
-    if search_response["suggested_queries"]
-      search_response["suggested_queries"].first
-    end
   end
 
   def result_count
