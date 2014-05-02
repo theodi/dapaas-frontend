@@ -205,7 +205,6 @@ class RootControllerTest < ActionController::TestCase
     assert_equal "http://linkedin.com/mr_tickle", doc.search('#social a')[0][:href]
     assert_equal "https://github.com/mr_tickle", doc.search('#social a')[1][:href]
     assert_equal "http://www.twitter.com/mr_tickle", doc.search('#social a')[2][:href]
-
   end
 
 end
