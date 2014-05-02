@@ -6,16 +6,10 @@ class SearchController < ApplicationController
 
   def perform
     @search_term = params[:q]
-    search_params = {
-      start: params[:start],
-      count: "#{requested_result_count}",
-      q: @search_term,
-    }
 
-    search_response = search_client.unified_search(search_params)
+    search_response = content_api.search(@search_term)
 
-    results = UnifiedSearchResultsPresenter.new(search_response)
-    @spelling_suggestion = results.spelling_suggestion
+    results = SearchResultsPresenter.new(search_response)
     @result_count = results.result_count
     @results = results.results
   end
