@@ -5,7 +5,9 @@
 <div class="article-main">
   <article class="people-body">
     <h2><%= [@publication.honorific_prefix, @publication.title, @publication.honorific_suffix].join(" ") %></h2>
-	  <h3><%= @publication.organisation['name'] %></h3>
+	  <% unless @publication.organisation.nil? %>
+      <h3><%= @publication.organisation['name'] %></h3>
+    <% end %>
     <%= @publication.description.html_safe %>
   </article>
 </div>
