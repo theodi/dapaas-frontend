@@ -1,0 +1,9 @@
+<% content_for :title, @publication.title %>
+
+<div class="article-full">
+  <article class="article-body">
+    <%= @publication.description %>
+
+    <%= link_to 'Download the report', @publication.details['report']['web_url'] %>
+  </article>
+</div>
