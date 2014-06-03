@@ -66,6 +66,21 @@ class RootControllerTest < ActionController::TestCase
     assert_equal doc.search('.date').first.content, "2014-01-21"
   end
 
+  test "should display reports" do
+    stub_request(:get, "http://contentapi.dev/dapaas-factsheet.json?role=dapaas").
+      with(:headers => {'Accept'=>'application/json', 'Accept-Encoding'=>'gzip, deflate', 'Authorization'=>'Bearer overwritten on deploy', 'Content-Type'=>'application/json', 'User-Agent'=>'GDS Api Client v. 7.25.0'}).
+      to_return(:status => 200, :body => load_fixture('dapaas-factsheet.json'), :headers => {})
+
+    get :reports_article, :slug => "dapaas-factsheet", :section => "reports"
+    assert_response :ok
+
+    doc = Nokogiri::HTML response.body
+
+    assert_equal doc.search('.page-title h1')[0].content, "DaPaaS fact sheet "
+    assert_match doc.search('.article-body').first.content, /A fact sheet on the DaPaaS project, providing information that includes: the vision, the impact and means of achievement and at a glance project facts/
+    assert_equal doc.search('.article-body a').first[:href], "http://bd7a65e2cb448908f934-86a50c88e47af9e1fb58ce0672b5a500.r32.cf3.rackcdn.com/uploads/assets/85/b3/5385b368f362be294500002b/dapaas-factsheet-Mar2014.pdf"
+  end
+
   test "should list events in chronological order" do
     Timecop.freeze(Time.parse("2013-01-28T13:00:00+00:00"))
     stub_request(:get, "http://contentapi.dev/with_tag.json?include_children=1&role=dapaas&tag=event").
