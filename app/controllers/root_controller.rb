@@ -2,7 +2,7 @@ require 'artefact_retriever'
 
 class RootController < ApplicationController
   slimmer_template :dapaas
-  
+
   def action_missing(name, *args, &block)
     if name.to_s =~ /^(.*)_list$/
       list(params)
@@ -12,14 +12,14 @@ class RootController < ApplicationController
       super
     end
   end
-  
+
   def index
     artefact = ArtefactRetriever.new(content_api, Rails.logger, statsd).
                   fetch_artefact('dapaas-home', nil, nil, nil)
     @publication = PublicationPresenter.new(artefact)
     render "content/page"
   end
-  
+
   def page
     artefact = ArtefactRetriever.new(content_api, Rails.logger, statsd).
                   fetch_artefact(params[:slug], params[:edition], nil, nil)
@@ -39,9 +39,13 @@ class RootController < ApplicationController
       end
     end
   end
-  
+
+  def reports_list
+    list(params, {sort: "date"})
+  end
+
   private
-  
+
   def article(params)
     artefact = ArtefactRetriever.new(content_api, Rails.logger, statsd).
                   fetch_artefact(params[:slug], params[:edition], nil, nil)
@@ -60,10 +64,10 @@ class RootController < ApplicationController
       end
     end
   end
-  
-  def list(params)
+
+  def list(params, options = {})
     @section = params[:section].parameterize
-    @artefacts = content_api.with_tag(params[:section].singularize).results
+    @artefacts = content_api.with_tag(params[:section].singularize, options).results
     @artefacts = news_artefacts(@artefacts) if @section == "news"
     sort_events(@artefacts) if @section == "events"
     @title = params[:section].gsub('-', ' ').humanize.capitalize
@@ -85,20 +89,20 @@ class RootController < ApplicationController
       end
     end
   end
-  
+
   def sort_events(artefacts)
     artefacts.reject!{|x| Date.parse(x.details.start_date || x.details.date) < Date.today}
     artefacts.sort_by!{|x| Date.parse(x.details.start_date || x.details.date)}
   end
-  
+
   def news_artefacts(artefacts)
     artefacts += content_api.with_tag("blog").results
     artefacts.sort_by!{|x| x.created_at}.reverse!
     artefacts
   end
-  
+
   def api_domain
     Plek.current.find("contentapi")
   end
-  
+
 end

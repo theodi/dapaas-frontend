@@ -7,7 +7,7 @@ class SearchResult
     "partner" => "partners_article_path",
     "page" => "page_path",
     "report" => "reports_article_path",
-    "networking-events" => "events_article_path"
+    "networking-events" => "events_article_path",
   }
 
   def initialize(result)
