@@ -171,7 +171,7 @@ class RootControllerTest < ActionController::TestCase
   end
 
   test "should list reports" do
-    stub_request(:get, "http://contentapi.dev/with_tag.json?include_children=1&role=dapaas&tag=report").
+    stub_request(:get, "http://contentapi.dev/with_tag.json?include_children=1&role=dapaas&sort=date&tag=report").
       with(:headers => {'Accept'=>'application/json', 'Accept-Encoding'=>'gzip, deflate', 'Authorization'=>'Bearer overwritten on deploy', 'Content-Type'=>'application/json', 'User-Agent'=>'GDS Api Client v. 7.25.0'}).
       to_return(:status => 200, :body => load_fixture('reports.json'), :headers => {})
 
