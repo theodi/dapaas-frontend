@@ -41,7 +41,7 @@ class RootController < ApplicationController
   end
 
   def reports_list
-    list(params, {sort: "date"})
+    list(params, {order_by: "name"})
   end
 
   private
