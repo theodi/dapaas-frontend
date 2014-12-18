@@ -3,7 +3,7 @@ require 'test_helper'
 class SearchControllerTest < ActionController::TestCase
 
   test "should show search results" do
-    stub_request(:get, "http://contentapi.dev/search.json?q=dapaas&role=dapaas").
+    stub_request(:get, "http://contentapi.dev/search.json?page=1&q=dapaas&role=dapaas").
       with(:headers => {'Accept'=>'application/json', 'Accept-Encoding'=>'gzip, deflate', 'Authorization'=>'Bearer overwritten on deploy', 'Content-Type'=>'application/json', 'User-Agent'=>'GDS Api Client v. 7.25.0'}).
       to_return(:status => 200, :body => load_fixture('search.json'), :headers => {})
 
