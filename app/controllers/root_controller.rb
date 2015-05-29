@@ -41,7 +41,27 @@ class RootController < ApplicationController
   end
 
   def reports_list
-    list(params, {order_by: "name"})
+    list(params, {order_by: "name"}, Proc.new { |artefacts| artefacts.sort_by!{|x| Date.parse(x.created_at) }.reverse! })
+  end
+
+  def events_list
+    sort_events = Proc.new { |artefacts|
+      artefacts.reject!{|x| Date.parse(x.details.start_date || x.details.date) < Date.today}
+      artefacts.sort_by!{|x| Date.parse(x.details.start_date || x.details.date)}
+    }
+
+    list(params, {}, sort_events)
+  end
+
+
+  def news_list
+    news_artefacts = Proc.new { |artefacts|
+      artefacts += content_api.with_tag("blog").results
+      artefacts.sort_by!{|x| x.created_at}.reverse!
+      artefacts
+    }
+
+    list(params, {}, news_artefacts)
   end
 
   private
@@ -65,11 +85,10 @@ class RootController < ApplicationController
     end
   end
 
-  def list(params, options = {})
+  def list(params, options = {}, proc = nil)
     @section = params[:section].parameterize
     @artefacts = content_api.with_tag(params[:section].singularize, options).results
-    @artefacts = news_artefacts(@artefacts) if @section == "news"
-    sort_events(@artefacts) if @section == "events"
+    @artefacts = proc.call(@artefacts) unless proc.nil?
     @title = params[:section].gsub('-', ' ').humanize.capitalize
     respond_to do |format|
       format.html do
@@ -88,17 +107,6 @@ class RootController < ApplicationController
         render "list/feed"
       end
     end
-  end
-
-  def sort_events(artefacts)
-    artefacts.reject!{|x| Date.parse(x.details.start_date || x.details.date) < Date.today}
-    artefacts.sort_by!{|x| Date.parse(x.details.start_date || x.details.date)}
-  end
-
-  def news_artefacts(artefacts)
-    artefacts += content_api.with_tag("blog").results
-    artefacts.sort_by!{|x| x.created_at}.reverse!
-    artefacts
   end
 
   def api_domain

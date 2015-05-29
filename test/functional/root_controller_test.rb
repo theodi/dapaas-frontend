@@ -182,7 +182,7 @@ class RootControllerTest < ActionController::TestCase
 
     assert_equal doc.search('table tbody tr').count, 1
     assert_equal "Report test", doc.search('table tbody tr td')[0].content
-    assert_equal "2014-01-28", doc.search('table tbody tr td')[1].content
+    assert_equal "2014-01-29", doc.search('table tbody tr td')[1].content
     assert_equal "/uploads/assets/e8/e6/52e8e63160aa27d4d2000009/seglog.txt", doc.search('table tbody tr td a')[0][:href]
   end
 
