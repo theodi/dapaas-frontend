@@ -13,7 +13,7 @@
   		<tr>
   		  <td><%= artefact.title %></td>
   		  <td><%= DateTime.parse(artefact.created_at).strftime("%Y-%m-%d") %></td>
-  		  <td><%= link_to "Download", artefact.details.web_url, :title => "Download #{artefact.title}" %></td>
+  		  <td><%= link_to "Download", artefact.details.report.web_url, :title => "Download #{artefact.title}" %></td>
   		</tr>
   	<% end %>
 	</tbody>
