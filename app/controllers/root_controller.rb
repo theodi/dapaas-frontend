@@ -41,7 +41,8 @@ class RootController < ApplicationController
   end
 
   def reports_list
-    list(params, {order_by: "name"})
+    list(params, {order_by: "name"}, Proc.new { |artefacts| artefacts.sort_by!{|x| Date.parse(x.created_at) }.reverse! })
+  end
   end
 
   private
@@ -65,11 +66,12 @@ class RootController < ApplicationController
     end
   end
 
-  def list(params, options = {})
+  def list(params, options = {}, proc = nil)
     @section = params[:section].parameterize
     @artefacts = content_api.with_tag(params[:section].singularize, options).results
     @artefacts = news_artefacts(@artefacts) if @section == "news"
     sort_events(@artefacts) if @section == "events"
+    @artefacts = proc.call(@artefacts) unless proc.nil?
     @title = params[:section].gsub('-', ' ').humanize.capitalize
     respond_to do |format|
       format.html do
