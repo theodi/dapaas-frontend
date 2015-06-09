@@ -14,10 +14,8 @@ class RootController < ApplicationController
   end
 
   def index
-    artefact = ArtefactRetriever.new(content_api, Rails.logger, statsd).
-                  fetch_artefact('dapaas-home', nil, nil, nil)
-    @publication = PublicationPresenter.new(artefact)
-    render "content/page"
+    @section = content_api.section("index")
+    render "section/section"
   end
 
   def page
