@@ -3,7 +3,7 @@ require 'test_helper'
 class RootControllerTest < ActionController::TestCase
 
   test "should get index" do
-    stub_request(:get, "http://contentapi.dev/section.json?id=index&role=dapaas").
+    stub_request(:get, "http://contentapi.dev/section.json?id=dapaas-home&role=dapaas").
       to_return(:status => 200, :body => load_fixture('homepage.json'), :headers => {})
 
     get :index
