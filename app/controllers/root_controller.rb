@@ -16,7 +16,7 @@ class RootController < ApplicationController
   end
 
   def index
-    @section = content_api.section("index")
+    @section = content_api.section("dapaas-home")
     render "section/section"
   end
 
