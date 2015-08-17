@@ -4,7 +4,9 @@ class RootController < ApplicationController
   slimmer_template :dapaas
 
   def action_missing(name, *args, &block)
-    if name.to_s =~ /^(.*)_list$/
+    if name.to_s =~ /^(.*)_list_module$/
+      list_module(params)
+    elsif name.to_s =~ /^(.*)_list$/
       list(params)
     elsif name.to_s =~ /^(.*)_article$/
       article(params)
@@ -14,10 +16,8 @@ class RootController < ApplicationController
   end
 
   def index
-    artefact = ArtefactRetriever.new(content_api, Rails.logger, statsd).
-                  fetch_artefact('dapaas-home', nil, nil, nil)
-    @publication = PublicationPresenter.new(artefact)
-    render "content/page"
+    @section = content_api.section("index")
+    render "section/section"
   end
 
   def page
@@ -53,7 +53,6 @@ class RootController < ApplicationController
     list(params, {}, sort_events)
   end
 
-
   def news_list
     news_artefacts = Proc.new { |artefacts|
       artefacts += content_api.with_tag("blog").results
@@ -63,6 +62,20 @@ class RootController < ApplicationController
 
     list(params, {}, news_artefacts)
   end
+
+  def list_module(params)
+    @section = params[:section].parameterize
+    @artefact = content_api.latest("tag", params[:section])
+    @title = params[:section].humanize.capitalize
+    slimmer_template "minimal"
+    begin
+      # Use a specific template if present
+      render "list_module/#{params[:section]}", layout: 'minimal'
+    rescue
+      render "list_module/list_module", layout: 'minimal'
+    end
+  end
+
 
   private
 
