@@ -5,7 +5,7 @@ rvm:
 - 1.9.3
 env:
   global:
-    - GOVUK_APP_DOMAIN: example.com
+    - GOVUK_APP_DOMAIN: dev
     - JUVIA_BASE_URL: https://juvia.example.com
     - QUIRKAFLEEG_DAPAAS_JUVIA_SITE_KEY: abc123
     - QUIRKAFLEEG_DAPAAS_SESSION_SECRET: abc123
