@@ -1,7 +1,6 @@
 source 'https://rubygems.org'
 
-#ruby=ruby-1.9.3
-#ruby-gemset=dapaas-frontend
+ruby "1.9.3"
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '~> 3.2.16'
@@ -41,6 +40,7 @@ end
 
 group :production do
   gem 'airbrake'
+  gem 'rails_12factor'
 end
 
 # Use ActiveModel has_secure_password
